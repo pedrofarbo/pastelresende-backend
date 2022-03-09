@@ -69,7 +69,6 @@ public class FeiraServiceImpl implements FeiraService {
     }
 
     try {
-      feira.getEndereco().setId(feiraRepository.count() + 1);
       Feira f = feiraRepository.save(feira);
 
       if (f.getId() != null) {
@@ -117,6 +116,7 @@ public class FeiraServiceImpl implements FeiraService {
           Feira f = feiraRepository.save(feira);
           return converter.converterFeiraToFeiraResponse(f);
         } catch (Exception e) {
+          e.printStackTrace();
           throw new InternalServerErrorException();
         }
 

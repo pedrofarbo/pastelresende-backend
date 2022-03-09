@@ -7,7 +7,6 @@ import java.io.Serializable;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-@ToString
 @EqualsAndHashCode
 public class CategoriaResponse implements Serializable {
   private long id;

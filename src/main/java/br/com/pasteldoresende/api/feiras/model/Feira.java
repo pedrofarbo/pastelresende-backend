@@ -27,8 +27,8 @@ public class Feira implements Serializable {
   @Column
   private String descricao;
 
-  @OneToOne(cascade = CascadeType.ALL, mappedBy = "feira")
-  private Endereco endereco;
+  @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.EAGER, mappedBy = "feira")
+  private FeiraEndereco endereco;
 
   @Column
   private String responsavel;

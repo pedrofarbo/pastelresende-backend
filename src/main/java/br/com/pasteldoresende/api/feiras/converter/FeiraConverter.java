@@ -3,7 +3,7 @@ package br.com.pasteldoresende.api.feiras.converter;
 import br.com.pasteldoresende.api.feiras.controller.request.FeiraRequest;
 import br.com.pasteldoresende.api.feiras.controller.response.EnderecoResponse;
 import br.com.pasteldoresende.api.feiras.controller.response.FeiraResponse;
-import br.com.pasteldoresende.api.feiras.model.Endereco;
+import br.com.pasteldoresende.api.feiras.model.FeiraEndereco;
 import br.com.pasteldoresende.api.feiras.model.Feira;
 import org.springframework.stereotype.Service;
 
@@ -67,7 +67,7 @@ public class FeiraConverter {
 
   public Feira converterFeiraRequestToFeira(FeiraRequest feiraRequest) {
     Feira feira = new Feira();
-    Endereco endereco = new Endereco();
+    FeiraEndereco endereco = new FeiraEndereco();
 
     endereco.setLogradouro(feiraRequest.getEndereco().getLogradouro());
     endereco.setNumero(feiraRequest.getEndereco().getNumero());

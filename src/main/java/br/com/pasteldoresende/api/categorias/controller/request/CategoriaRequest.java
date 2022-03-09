@@ -7,7 +7,6 @@ import java.io.Serializable;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-@ToString
 @EqualsAndHashCode
 public class CategoriaRequest implements Serializable {
   private String nome;

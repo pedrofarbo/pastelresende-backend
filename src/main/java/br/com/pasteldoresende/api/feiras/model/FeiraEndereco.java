@@ -1,6 +1,8 @@
 package br.com.pasteldoresende.api.feiras.model;
 
 import lombok.*;
+import org.hibernate.annotations.OnDelete;
+import org.hibernate.annotations.OnDeleteAction;
 
 import javax.persistence.*;
 import java.io.Serializable;
@@ -12,17 +14,19 @@ import java.io.Serializable;
 @NoArgsConstructor
 @ToString
 @EqualsAndHashCode
-public class Endereco implements Serializable {
+public class FeiraEndereco implements Serializable {
 
   private static final long serialVersionUID = -2952735933715107252L;
 
   @Id
   @Column(unique = true, nullable = false)
+  @GeneratedValue(strategy = GenerationType.IDENTITY)
   private Long id;
 
   @MapsId("id")
   @OneToOne
   @JoinColumn(name = "id")
+  @OnDelete(action = OnDeleteAction.CASCADE)
   private Feira feira;
 
   @Column

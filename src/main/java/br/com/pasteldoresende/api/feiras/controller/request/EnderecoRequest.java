@@ -3,13 +3,11 @@ package br.com.pasteldoresende.api.feiras.controller.request;
 import br.com.pasteldoresende.api.feiras.model.Feira;
 import lombok.*;
 
-import javax.persistence.*;
 import java.io.Serializable;
 
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-@ToString
 @EqualsAndHashCode
 public class EnderecoRequest implements Serializable {
 
