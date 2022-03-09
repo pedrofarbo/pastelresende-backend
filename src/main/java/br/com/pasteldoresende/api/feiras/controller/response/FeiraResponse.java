@@ -14,7 +14,7 @@ public class FeiraResponse implements Serializable {
   private Long id;
   private String nome;
   private String descricao;
-  private EnderecoResponse endereco;
+  private FeiraEnderecoResponse endereco;
   private String responsavel;
   private String obs;
 }

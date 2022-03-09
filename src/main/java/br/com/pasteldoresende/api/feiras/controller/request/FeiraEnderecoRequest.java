@@ -1,4 +1,4 @@
-package br.com.pasteldoresende.api.feiras.controller.response;
+package br.com.pasteldoresende.api.feiras.controller.request;
 
 import br.com.pasteldoresende.api.feiras.model.Feira;
 import lombok.*;
@@ -9,11 +9,10 @@ import java.io.Serializable;
 @AllArgsConstructor
 @NoArgsConstructor
 @EqualsAndHashCode
-public class EnderecoResponse implements Serializable {
+public class FeiraEnderecoRequest implements Serializable {
 
   private static final long serialVersionUID = -2952735933715107252L;
 
-  private Long id;
   private Feira feira;
   private String logradouro;
   private String numero;

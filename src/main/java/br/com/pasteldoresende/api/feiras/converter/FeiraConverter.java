@@ -1,7 +1,7 @@
 package br.com.pasteldoresende.api.feiras.converter;
 
 import br.com.pasteldoresende.api.feiras.controller.request.FeiraRequest;
-import br.com.pasteldoresende.api.feiras.controller.response.EnderecoResponse;
+import br.com.pasteldoresende.api.feiras.controller.response.FeiraEnderecoResponse;
 import br.com.pasteldoresende.api.feiras.controller.response.FeiraResponse;
 import br.com.pasteldoresende.api.feiras.model.FeiraEndereco;
 import br.com.pasteldoresende.api.feiras.model.Feira;
@@ -17,23 +17,23 @@ public class FeiraConverter {
 
     for (Feira feira : feiras) {
       FeiraResponse feiraResponse = new FeiraResponse();
-      EnderecoResponse enderecoResponse = new EnderecoResponse();
+      FeiraEnderecoResponse feiraEnderecoResponse = new FeiraEnderecoResponse();
 
-      enderecoResponse.setId(feira.getEndereco().getId());
-      enderecoResponse.setLogradouro(feira.getEndereco().getLogradouro());
-      enderecoResponse.setNumero(feira.getEndereco().getNumero());
-      enderecoResponse.setBairro(feira.getEndereco().getBairro());
-      enderecoResponse.setCidade(feira.getEndereco().getCidade());
-      enderecoResponse.setUf(feira.getEndereco().getUf());
-      enderecoResponse.setCep(feira.getEndereco().getCep());
-      enderecoResponse.setComplemento(feira.getEndereco().getComplemento());
+      feiraEnderecoResponse.setId(feira.getEndereco().getId());
+      feiraEnderecoResponse.setLogradouro(feira.getEndereco().getLogradouro());
+      feiraEnderecoResponse.setNumero(feira.getEndereco().getNumero());
+      feiraEnderecoResponse.setBairro(feira.getEndereco().getBairro());
+      feiraEnderecoResponse.setCidade(feira.getEndereco().getCidade());
+      feiraEnderecoResponse.setUf(feira.getEndereco().getUf());
+      feiraEnderecoResponse.setCep(feira.getEndereco().getCep());
+      feiraEnderecoResponse.setComplemento(feira.getEndereco().getComplemento());
 
       feiraResponse.setId(feira.getId());
       feiraResponse.setNome(feira.getNome());
       feiraResponse.setDescricao(feira.getDescricao());
       feiraResponse.setResponsavel(feira.getResponsavel());
       feiraResponse.setObs(feira.getObs());
-      feiraResponse.setEndereco(enderecoResponse);
+      feiraResponse.setEndereco(feiraEnderecoResponse);
 
       feiraResponseList.add(feiraResponse);
     }
@@ -42,25 +42,25 @@ public class FeiraConverter {
   }
 
   public FeiraResponse converterFeiraToFeiraResponse(Feira feira) {
-    EnderecoResponse enderecoResponse = new EnderecoResponse();
+    FeiraEnderecoResponse feiraEnderecoResponse = new FeiraEnderecoResponse();
 
     FeiraResponse feiraResponse = new FeiraResponse();
 
-    enderecoResponse.setId(feira.getEndereco().getId());
-    enderecoResponse.setLogradouro(feira.getEndereco().getLogradouro());
-    enderecoResponse.setNumero(feira.getEndereco().getNumero());
-    enderecoResponse.setBairro(feira.getEndereco().getBairro());
-    enderecoResponse.setCidade(feira.getEndereco().getCidade());
-    enderecoResponse.setUf(feira.getEndereco().getUf());
-    enderecoResponse.setCep(feira.getEndereco().getCep());
-    enderecoResponse.setComplemento(feira.getEndereco().getComplemento());
+    feiraEnderecoResponse.setId(feira.getEndereco().getId());
+    feiraEnderecoResponse.setLogradouro(feira.getEndereco().getLogradouro());
+    feiraEnderecoResponse.setNumero(feira.getEndereco().getNumero());
+    feiraEnderecoResponse.setBairro(feira.getEndereco().getBairro());
+    feiraEnderecoResponse.setCidade(feira.getEndereco().getCidade());
+    feiraEnderecoResponse.setUf(feira.getEndereco().getUf());
+    feiraEnderecoResponse.setCep(feira.getEndereco().getCep());
+    feiraEnderecoResponse.setComplemento(feira.getEndereco().getComplemento());
 
     feiraResponse.setId(feira.getId());
     feiraResponse.setNome(feira.getNome());
     feiraResponse.setDescricao(feira.getDescricao());
     feiraResponse.setResponsavel(feira.getResponsavel());
     feiraResponse.setObs(feira.getObs());
-    feiraResponse.setEndereco(enderecoResponse);
+    feiraResponse.setEndereco(feiraEnderecoResponse);
 
     return feiraResponse;
   }

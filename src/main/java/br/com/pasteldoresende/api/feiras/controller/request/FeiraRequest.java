@@ -12,7 +12,7 @@ public class FeiraRequest implements Serializable {
 
   private String nome;
   private String descricao;
-  private EnderecoRequest endereco;
+  private FeiraEnderecoRequest endereco;
   private String responsavel;
   private String obs;
 }
