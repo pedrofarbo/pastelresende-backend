@@ -1,5 +1,6 @@
 package br.com.pasteldoresende.api.feiras.model;
 
+import br.com.pasteldoresende.api.funcionarios.model.Funcionario;
 import lombok.*;
 
 import javax.persistence.*;
@@ -30,8 +31,9 @@ public class Feira implements Serializable {
   @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.EAGER, mappedBy = "feira")
   private FeiraEndereco endereco;
 
-  @Column
-  private String responsavel;
+  @ManyToOne(fetch = FetchType.LAZY)
+  @JoinColumn(name = "funcionario_id")
+  private Funcionario responsavel;
 
   @Column
   private String obs;

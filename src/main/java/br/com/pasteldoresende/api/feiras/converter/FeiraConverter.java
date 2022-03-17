@@ -5,6 +5,9 @@ import br.com.pasteldoresende.api.feiras.controller.response.FeiraEnderecoRespon
 import br.com.pasteldoresende.api.feiras.controller.response.FeiraResponse;
 import br.com.pasteldoresende.api.feiras.model.FeiraEndereco;
 import br.com.pasteldoresende.api.feiras.model.Feira;
+import br.com.pasteldoresende.api.funcionarios.controller.request.FuncionarioRequest;
+import br.com.pasteldoresende.api.funcionarios.controller.response.FuncionarioResponse;
+import br.com.pasteldoresende.api.funcionarios.model.Funcionario;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -28,10 +31,22 @@ public class FeiraConverter {
       feiraEnderecoResponse.setCep(feira.getEndereco().getCep());
       feiraEnderecoResponse.setComplemento(feira.getEndereco().getComplemento());
 
+      FuncionarioResponse funcionarioResponse = new FuncionarioResponse();
+
+      if(feira.getResponsavel() != null) {
+        if(feira.getResponsavel().getId() != null) {
+          funcionarioResponse.setId(feira.getResponsavel().getId());
+        }
+
+        funcionarioResponse.setNome(feira.getResponsavel().getNome());
+        funcionarioResponse.setDescricao(feira.getResponsavel().getDescricao());
+        funcionarioResponse.setFreela(feira.getResponsavel().getFreela());
+      }
+
       feiraResponse.setId(feira.getId());
       feiraResponse.setNome(feira.getNome());
       feiraResponse.setDescricao(feira.getDescricao());
-      feiraResponse.setResponsavel(feira.getResponsavel());
+      feiraResponse.setResponsavel(funcionarioResponse);
       feiraResponse.setObs(feira.getObs());
       feiraResponse.setEndereco(feiraEnderecoResponse);
 
@@ -55,17 +70,29 @@ public class FeiraConverter {
     feiraEnderecoResponse.setCep(feira.getEndereco().getCep());
     feiraEnderecoResponse.setComplemento(feira.getEndereco().getComplemento());
 
+    FuncionarioResponse funcionarioResponse = new FuncionarioResponse();
+
+    if(feira.getResponsavel() != null) {
+      if(feira.getResponsavel().getId() != null) {
+        funcionarioResponse.setId(feira.getResponsavel().getId());
+      }
+
+      funcionarioResponse.setNome(feira.getResponsavel().getNome());
+      funcionarioResponse.setDescricao(feira.getResponsavel().getDescricao());
+      funcionarioResponse.setFreela(feira.getResponsavel().getFreela());
+    }
+
     feiraResponse.setId(feira.getId());
     feiraResponse.setNome(feira.getNome());
     feiraResponse.setDescricao(feira.getDescricao());
-    feiraResponse.setResponsavel(feira.getResponsavel());
+    feiraResponse.setResponsavel(funcionarioResponse);
     feiraResponse.setObs(feira.getObs());
     feiraResponse.setEndereco(feiraEnderecoResponse);
 
     return feiraResponse;
   }
 
-  public Feira converterFeiraRequestToFeira(FeiraRequest feiraRequest) {
+  public Feira converterFeiraRequestToFeira(FeiraRequest feiraRequest, Funcionario funcionario) {
     Feira feira = new Feira();
     FeiraEndereco endereco = new FeiraEndereco();
 
@@ -79,7 +106,7 @@ public class FeiraConverter {
 
     feira.setNome(feiraRequest.getNome());
     feira.setDescricao(feiraRequest.getDescricao());
-    feira.setResponsavel(feiraRequest.getResponsavel());
+    feira.setResponsavel(funcionario);
     feira.setObs(feiraRequest.getObs());
     feira.setEndereco(endereco);
 

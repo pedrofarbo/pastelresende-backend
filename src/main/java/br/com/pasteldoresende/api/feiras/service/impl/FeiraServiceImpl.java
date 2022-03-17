@@ -6,6 +6,8 @@ import br.com.pasteldoresende.api.feiras.converter.FeiraConverter;
 import br.com.pasteldoresende.api.feiras.model.Feira;
 import br.com.pasteldoresende.api.feiras.repository.FeiraRepository;
 import br.com.pasteldoresende.api.feiras.service.FeiraService;
+import br.com.pasteldoresende.api.funcionarios.model.Funcionario;
+import br.com.pasteldoresende.api.funcionarios.repository.FuncionarioRepository;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -22,6 +24,7 @@ import java.util.Optional;
 public class FeiraServiceImpl implements FeiraService {
 
   private final FeiraRepository feiraRepository;
+  private final FuncionarioRepository funcionarioRepository;
   private final FeiraConverter converter;
 
   @Override
@@ -55,31 +58,37 @@ public class FeiraServiceImpl implements FeiraService {
 
   @Override
   public FeiraResponse save(FeiraRequest feiraRequest) {
-    Feira feira = converter.converterFeiraRequestToFeira(feiraRequest);
+    Optional<Funcionario> funcionario = funcionarioRepository.findById(feiraRequest.getResponsavelId());
 
-    try {
-      Feira f1 = feiraRepository.findByNome(feiraRequest.getNome());
+    if(funcionario.isPresent()) {
+      Feira feira = converter.converterFeiraRequestToFeira(feiraRequest, funcionario.get());
 
-      if (f1 != null) {
+      try {
+        Feira f1 = feiraRepository.findByNome(feiraRequest.getNome());
+
+        if (f1 != null) {
+          throw new BadRequestException();
+        }
+
+      } catch (BadRequestException bad) {
         throw new BadRequestException();
       }
 
-    } catch (BadRequestException bad) {
-      throw new BadRequestException();
-    }
+      try {
+        Feira f = feiraRepository.save(feira);
 
-    try {
-      Feira f = feiraRepository.save(feira);
+        if (f.getId() != null) {
+          return converter.converterFeiraToFeiraResponse(f);
+        } else {
+          throw new InternalServerErrorException();
+        }
 
-      if (f.getId() != null) {
-        return converter.converterFeiraToFeiraResponse(f);
-      } else {
+      } catch (Exception e) {
+        e.printStackTrace();
         throw new InternalServerErrorException();
       }
-
-    } catch (Exception e) {
-      e.printStackTrace();
-      throw new InternalServerErrorException();
+    } else {
+      throw new BadRequestException();
     }
   }
 
@@ -97,33 +106,38 @@ public class FeiraServiceImpl implements FeiraService {
     }
 
     try {
-      Optional<Feira> feiraOptional = feiraRepository.findById(id);
+      Optional<Funcionario> funcionario = funcionarioRepository.findById(feiraRequest.getResponsavelId());
 
-      if (feiraOptional.isPresent()) {
-        Feira feira = converter.converterFeiraRequestToFeira(feiraRequest);
-        feira.setId(feiraOptional.get().getId());
+      if(funcionario.isPresent()) {
+        Optional<Feira> feiraOptional = feiraRepository.findById(id);
 
-        if (feiraOptional.get().getDescricao() != null && feiraRequest.getDescricao() != null) {
-          feira.setDescricao(feiraRequest.getDescricao());
-        } else if (feiraOptional.get().getDescricao() == null && feiraRequest.getDescricao() != null) {
-          feira.setDescricao(feiraRequest.getDescricao());
+        if (feiraOptional.isPresent()) {
+          Feira feira = converter.converterFeiraRequestToFeira(feiraRequest, funcionario.get());
+          feira.setId(feiraOptional.get().getId());
+
+          if (feiraOptional.get().getDescricao() != null && feiraRequest.getDescricao() != null) {
+            feira.setDescricao(feiraRequest.getDescricao());
+          } else if (feiraOptional.get().getDescricao() == null && feiraRequest.getDescricao() != null) {
+            feira.setDescricao(feiraRequest.getDescricao());
+          } else {
+            feira.setDescricao(feiraOptional.get().getDescricao());
+          }
+
+          try {
+            feira.getEndereco().setId(feiraOptional.get().getEndereco().getId());
+            Feira f = feiraRepository.save(feira);
+            return converter.converterFeiraToFeiraResponse(f);
+          } catch (Exception e) {
+            e.printStackTrace();
+            throw new InternalServerErrorException();
+          }
+
         } else {
-          feira.setDescricao(feiraOptional.get().getDescricao());
+          throw new NotFoundException();
         }
-
-        try {
-          feira.getEndereco().setId(feiraOptional.get().getEndereco().getId());
-          Feira f = feiraRepository.save(feira);
-          return converter.converterFeiraToFeiraResponse(f);
-        } catch (Exception e) {
-          e.printStackTrace();
-          throw new InternalServerErrorException();
-        }
-
       } else {
         throw new NotFoundException();
       }
-
     } catch (NotFoundException no) {
       throw new NotFoundException();
     }

@@ -1,5 +1,7 @@
 package br.com.pasteldoresende.api.feiras.controller.response;
 
+import br.com.pasteldoresende.api.funcionarios.controller.response.FuncionarioResponse;
+import br.com.pasteldoresende.api.funcionarios.model.Funcionario;
 import lombok.*;
 
 import java.io.Serializable;
@@ -15,6 +17,6 @@ public class FeiraResponse implements Serializable {
   private String nome;
   private String descricao;
   private FeiraEnderecoResponse endereco;
-  private String responsavel;
+  private FuncionarioResponse responsavel;
   private String obs;
 }

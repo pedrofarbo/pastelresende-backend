@@ -18,7 +18,8 @@ public class Categoria extends AbstractPersistable<Long> implements Serializable
   private static final long serialVersionUID = -2952735933715107252L;
 
   @Id
-  @GeneratedValue(strategy = GenerationType.AUTO)
+  @GeneratedValue(strategy = GenerationType.IDENTITY)
+  @Column(name = "id", nullable = false)
   private Long id;
 
   @Column
