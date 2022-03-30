@@ -2,13 +2,9 @@ package br.com.pasteldoresende.api.produtos.converter;
 
 import br.com.pasteldoresende.api.categorias.controller.response.CategoriaResponse;
 import br.com.pasteldoresende.api.categorias.model.Categoria;
-import br.com.pasteldoresende.api.feiras.controller.response.FeiraEnderecoResponse;
 import br.com.pasteldoresende.api.feiras.controller.response.FeiraResponse;
 import br.com.pasteldoresende.api.feiras.model.Feira;
-import br.com.pasteldoresende.api.funcionarios.controller.response.FuncionarioResponse;
-import br.com.pasteldoresende.api.funcionarios.model.Funcionario;
 import br.com.pasteldoresende.api.produtos.controller.request.ProdutoRequest;
-import br.com.pasteldoresende.api.produtos.controller.response.ProdutoResponse;
 import br.com.pasteldoresende.api.produtos.model.Produto;
 import org.springframework.stereotype.Service;
 
@@ -18,11 +14,11 @@ import java.util.List;
 @Service
 public class ProdutoConverter {
 
-  public List<ProdutoResponse> converterProdutoListToProdutoResponseList(List<Produto> produtos) {
-    List<ProdutoResponse> produtoResponseList = new ArrayList<>();
+  public List<br.com.pasteldoresende.api.produtos.controller.response.ProdutoResponse> converterProdutoListToProdutoResponseList(List<Produto> produtos) {
+    List<br.com.pasteldoresende.api.produtos.controller.response.ProdutoResponse> produtoResponseList = new ArrayList<>();
 
     produtos.forEach(p -> {
-      ProdutoResponse produtoResponse = new ProdutoResponse();
+      br.com.pasteldoresende.api.produtos.controller.response.ProdutoResponse produtoResponse = new br.com.pasteldoresende.api.produtos.controller.response.ProdutoResponse();
 
       if (p.getId() != null) {
         produtoResponse.setId(p.getId());
@@ -66,8 +62,8 @@ public class ProdutoConverter {
     return produtoResponseList;
   }
 
-  public ProdutoResponse converterProdutoToProdutoResponse(Produto produto) {
-    ProdutoResponse produtoResponse = new ProdutoResponse();
+  public br.com.pasteldoresende.api.produtos.controller.response.ProdutoResponse converterProdutoToProdutoResponse(Produto produto) {
+    br.com.pasteldoresende.api.produtos.controller.response.ProdutoResponse produtoResponse = new br.com.pasteldoresende.api.produtos.controller.response.ProdutoResponse();
 
     if (produto.getId() != null) {
       produtoResponse.setId(produto.getId());

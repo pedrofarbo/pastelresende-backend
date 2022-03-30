@@ -1,15 +1,12 @@
 package br.com.pasteldoresende.api.produtos.controller.response;
 
 import br.com.pasteldoresende.api.categorias.controller.response.CategoriaResponse;
-import br.com.pasteldoresende.api.categorias.model.Categoria;
 import br.com.pasteldoresende.api.feiras.controller.response.FeiraResponse;
-import br.com.pasteldoresende.api.feiras.model.Feira;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 
-import javax.persistence.*;
 import java.io.Serializable;
 import java.math.BigDecimal;
 
