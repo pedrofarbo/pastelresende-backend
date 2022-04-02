@@ -61,14 +61,19 @@ public class FeiraConverter {
 
     FeiraResponse feiraResponse = new FeiraResponse();
 
-    feiraEnderecoResponse.setId(feira.getEndereco().getId());
-    feiraEnderecoResponse.setLogradouro(feira.getEndereco().getLogradouro());
-    feiraEnderecoResponse.setNumero(feira.getEndereco().getNumero());
-    feiraEnderecoResponse.setBairro(feira.getEndereco().getBairro());
-    feiraEnderecoResponse.setCidade(feira.getEndereco().getCidade());
-    feiraEnderecoResponse.setUf(feira.getEndereco().getUf());
-    feiraEnderecoResponse.setCep(feira.getEndereco().getCep());
-    feiraEnderecoResponse.setComplemento(feira.getEndereco().getComplemento());
+    if(feira.getEndereco() != null) {
+      feiraEnderecoResponse.setId(feira.getEndereco().getId());
+      feiraEnderecoResponse.setLogradouro(feira.getEndereco().getLogradouro());
+      feiraEnderecoResponse.setNumero(feira.getEndereco().getNumero());
+      feiraEnderecoResponse.setBairro(feira.getEndereco().getBairro());
+      feiraEnderecoResponse.setCidade(feira.getEndereco().getCidade());
+      feiraEnderecoResponse.setUf(feira.getEndereco().getUf());
+      feiraEnderecoResponse.setCep(feira.getEndereco().getCep());
+      feiraEnderecoResponse.setComplemento(feira.getEndereco().getComplemento());
+      feiraResponse.setEndereco(feiraEnderecoResponse);
+    } else {
+      feiraResponse.setEndereco(null);
+    }
 
     FuncionarioResponse funcionarioResponse = new FuncionarioResponse();
 
@@ -87,7 +92,6 @@ public class FeiraConverter {
     feiraResponse.setDescricao(feira.getDescricao());
     feiraResponse.setResponsavel(funcionarioResponse);
     feiraResponse.setObs(feira.getObs());
-    feiraResponse.setEndereco(feiraEnderecoResponse);
 
     return feiraResponse;
   }

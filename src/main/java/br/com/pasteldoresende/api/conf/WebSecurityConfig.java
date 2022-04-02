@@ -2,7 +2,6 @@ package br.com.pasteldoresende.api.conf;
 
 import br.com.pasteldoresende.api.seguranca.JwtAuthenticationEntryPoint;
 import br.com.pasteldoresende.api.seguranca.JwtAuthenticationTokenFilter;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;

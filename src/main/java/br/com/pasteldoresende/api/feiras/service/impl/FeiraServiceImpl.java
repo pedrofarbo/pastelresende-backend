@@ -48,6 +48,7 @@ public class FeiraServiceImpl implements FeiraService {
 
   @Override
   public FeiraResponse getById(Long id) {
+    System.out.println(id);
     try {
       Optional<Feira> feira = feiraRepository.findById(id);
       return feira.map(converter::converterFeiraToFeiraResponse).orElse(null);
