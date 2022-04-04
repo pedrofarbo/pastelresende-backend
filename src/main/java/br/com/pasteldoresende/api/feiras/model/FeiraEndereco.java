@@ -1,6 +1,5 @@
 package br.com.pasteldoresende.api.feiras.model;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.*;
 import org.hibernate.annotations.OnDelete;
 import org.hibernate.annotations.OnDeleteAction;
@@ -13,7 +12,7 @@ import java.io.Serializable;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-@ToString
+@ToString(of="id")
 @EqualsAndHashCode
 public class FeiraEndereco implements Serializable {
 
@@ -25,7 +24,7 @@ public class FeiraEndereco implements Serializable {
   private Long id;
 
   @MapsId("id")
-  @OneToOne
+  @OneToOne(fetch = FetchType.LAZY, optional = false)
   @JoinColumn(name = "id")
   @OnDelete(action = OnDeleteAction.CASCADE)
   private Feira feira;

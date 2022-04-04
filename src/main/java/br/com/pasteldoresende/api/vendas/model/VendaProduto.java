@@ -10,13 +10,19 @@ import java.io.Serializable;
 @Table(name = "venda_produtos")
 @Data
 @ToString(of = {"id"})
+@EqualsAndHashCode(exclude = "venda")
+@AllArgsConstructor
+@NoArgsConstructor
 public class VendaProduto implements Serializable {
 
-  @EmbeddedId
-  private VendaProdutoId id;
+  @Id
+  @GeneratedValue(strategy = GenerationType.IDENTITY)
+  private Long id;
 
-  @MapsId("vendaId")
-  @ManyToOne
+  @Column
+  private Integer sequencia;
+
+  @ManyToOne(fetch = FetchType.LAZY, optional = false)
   @JoinColumn(name = "venda_id", nullable = false)
   private Venda venda;
 

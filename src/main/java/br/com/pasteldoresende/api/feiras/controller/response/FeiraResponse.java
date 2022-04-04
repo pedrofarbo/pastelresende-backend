@@ -10,6 +10,7 @@ import java.io.Serializable;
 @AllArgsConstructor
 @NoArgsConstructor
 @EqualsAndHashCode
+@ToString
 public class FeiraResponse implements Serializable {
   private static final long serialVersionUID = -2952735933715107252L;
 

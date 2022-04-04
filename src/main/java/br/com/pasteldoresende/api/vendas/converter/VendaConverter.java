@@ -14,12 +14,12 @@ import br.com.pasteldoresende.api.vendas.controller.response.VendaProdutoRespons
 import br.com.pasteldoresende.api.vendas.controller.response.VendaResponse;
 import br.com.pasteldoresende.api.vendas.model.Venda;
 import br.com.pasteldoresende.api.vendas.model.VendaProduto;
-import br.com.pasteldoresende.api.vendas.model.VendaProdutoId;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.*;
-import java.util.stream.Collectors;
 
 @Service
 public class VendaConverter {
@@ -35,9 +35,7 @@ public class VendaConverter {
       }
 
       List<VendaProdutoResponse> vendaProdutoResponseList = new ArrayList<>();
-      VendaProdutoResponse vendaProdutoResponse = new VendaProdutoResponse();
 
-      ProdutoResponse produtoResponse = new ProdutoResponse();
       CategoriaResponse categoriaResponse = new CategoriaResponse();
       FeiraResponse feiraResponse = new FeiraResponse();
 
@@ -52,37 +50,47 @@ public class VendaConverter {
         feiraResponse.setEndereco(null);
       }
 
-      v.getProdutos().forEach(p -> {
-        if (p.getProduto() != null) {
-          if (p.getProduto().getId() != null) {
-            produtoResponse.setId(p.getProduto().getId());
-          }
+      if (!v.getProdutos().isEmpty()) {
+        v.getProdutos().forEach(p -> {
+          VendaProdutoResponse vendaProdutoResponse = new VendaProdutoResponse();
+          ProdutoResponse produtoResponse = new ProdutoResponse();
 
-          if (p.getProduto().getCategoria() != null) {
-            if (p.getProduto().getCategoria().getId() != null) {
-              categoriaResponse.setId(p.getProduto().getCategoria().getId());
+          if (p.getProduto() != null) {
+            if (p.getProduto().getId() != null) {
+              produtoResponse.setId(p.getProduto().getId());
             }
 
-            categoriaResponse.setDescricao(p.getProduto().getCategoria().getDescricao());
-            categoriaResponse.setNome(p.getProduto().getCategoria().getNome());
+            if (p.getProduto().getCategoria() != null) {
+              if (p.getProduto().getCategoria().getId() != null) {
+                categoriaResponse.setId(p.getProduto().getCategoria().getId());
+              }
+
+              categoriaResponse.setDescricao(p.getProduto().getCategoria().getDescricao());
+              categoriaResponse.setNome(p.getProduto().getCategoria().getNome());
+            }
+
+            produtoResponse.setDescricao(p.getProduto().getDescricao());
+            produtoResponse.setNome(p.getProduto().getNome());
+            produtoResponse.setCategoria(categoriaResponse);
+            produtoResponse.setFeira(feiraResponse);
+            produtoResponse.setImagemBase64(p.getProduto().getImagemBase64());
+            produtoResponse.setPreco(p.getProduto().getPreco());
+
+            vendaProdutoResponse.setProduto(produtoResponse);
+            vendaProdutoResponse.setId(p.getId());
+            vendaProdutoResponse.setSequencia(p.getSequencia());
+            vendaProdutoResponse.setQuantidade(p.getQuantidade());
+            vendaProdutoResponseList.add(vendaProdutoResponse);
           }
-
-          produtoResponse.setDescricao(p.getProduto().getDescricao());
-          produtoResponse.setNome(p.getProduto().getNome());
-          produtoResponse.setCategoria(categoriaResponse);
-          produtoResponse.setFeira(null);
-          produtoResponse.setImagemBase64(p.getProduto().getImagemBase64());
-          produtoResponse.setPreco(p.getProduto().getPreco());
-
-          vendaProdutoResponse.setProduto(produtoResponse);
-          vendaProdutoResponse.setQuantidade(p.getQuantidade());
-          vendaProdutoResponseList.add(vendaProdutoResponse);
-        }
-      });
+        });
+      }
 
       vendaResponse.setVendaProdutos(vendaProdutoResponseList);
       vendaResponse.setTipoVenda(v.getTipoVenda());
       vendaResponse.setTotal(v.getTotal());
+      vendaResponse.setFeira(feiraResponse);
+      vendaResponse.setDataCriacao(v.getDataCriacao());
+      vendaResponse.setDataAtualizacao(v.getDataAtualizacao());
 
       vendaResponseList.add(vendaResponse);
     });
@@ -98,9 +106,6 @@ public class VendaConverter {
     }
 
     List<VendaProdutoResponse> vendaProdutoResponseList = new ArrayList<>();
-    VendaProdutoResponse vendaProdutoResponse = new VendaProdutoResponse();
-
-    ProdutoResponse produtoResponse = new ProdutoResponse();
     CategoriaResponse categoriaResponse = new CategoriaResponse();
     FeiraResponse feiraResponse = new FeiraResponse();
 
@@ -117,6 +122,9 @@ public class VendaConverter {
 
     v.getProdutos().forEach(p -> {
       if (p.getProduto() != null) {
+        ProdutoResponse produtoResponse = new ProdutoResponse();
+        VendaProdutoResponse vendaProdutoResponse = new VendaProdutoResponse();
+
         if (p.getProduto().getId() != null) {
           produtoResponse.setId(p.getProduto().getId());
         }
@@ -133,11 +141,13 @@ public class VendaConverter {
         produtoResponse.setDescricao(p.getProduto().getDescricao());
         produtoResponse.setNome(p.getProduto().getNome());
         produtoResponse.setCategoria(categoriaResponse);
-        produtoResponse.setFeira(null);
+        produtoResponse.setFeira(feiraResponse);
         produtoResponse.setImagemBase64(p.getProduto().getImagemBase64());
         produtoResponse.setPreco(p.getProduto().getPreco());
 
         vendaProdutoResponse.setProduto(produtoResponse);
+        vendaProdutoResponse.setId(p.getId());
+        vendaProdutoResponse.setSequencia(p.getSequencia());
         vendaProdutoResponse.setQuantidade(p.getQuantidade());
         vendaProdutoResponseList.add(vendaProdutoResponse);
       }
@@ -146,6 +156,9 @@ public class VendaConverter {
     vendaResponse.setVendaProdutos(vendaProdutoResponseList);
     vendaResponse.setTipoVenda(v.getTipoVenda());
     vendaResponse.setTotal(v.getTotal());
+    vendaResponse.setFeira(feiraResponse);
+    vendaResponse.setDataCriacao(v.getDataCriacao());
+    vendaResponse.setDataAtualizacao(v.getDataAtualizacao());
 
     return vendaResponse;
   }
@@ -167,7 +180,14 @@ public class VendaConverter {
 
     BigDecimal total = BigDecimal.ZERO;
 
+    int sequencia = 0;
+    BigDecimal valorTotalProduto;
+
     for (ProdutoResponse produtoResponse : produtosResponseList) {
+      valorTotalProduto = BigDecimal.ZERO;
+
+      sequencia++;
+
       VendaProduto vendaProduto = new VendaProduto();
 
       Produto produto = new Produto();
@@ -188,41 +208,26 @@ public class VendaConverter {
       vendaProduto.setProduto(produto);
       vendaProduto.setQuantidade(vendaRequest.getProdutos().stream().filter(p -> p.getProdutoId().equals(produtoResponse.getId())).findFirst().orElseGet(VendaProdutoRequest::new).getQuantidade());
 
-      vendaProdutoList.add(vendaProduto);
-
-      total = total.add(produtoResponse.getPreco());
+      valorTotalProduto = valorTotalProduto.add(produtoResponse.getPreco().multiply(BigDecimal.valueOf(vendaProduto.getQuantidade())));
+      total = total.add(valorTotalProduto);
 
       vendaProduto.setVenda(venda);
 
-      if (vendaProduto.getId() == null) {
-        vendaProduto.setId(new VendaProdutoId());
-      }
+      vendaProduto.setSequencia(sequencia);
 
-      if (vendaProduto.getId().getVendaId() == null) {
-        vendaProduto.getId().setVendaId(venda.getId());
-      }
-
-      if (vendaProduto.getId().getSequencia() == null) {
-        final int sequencia = venda.getProdutos().stream()
-          .filter(pi -> pi.getId() != null && pi.getId().getSequencia() != null)
-          .mapToInt(pi -> Math.toIntExact(pi.getId().getSequencia()))
-          .max()
-          .orElse(0) + 1;
-
-        vendaProduto.getId().setSequencia((long) sequencia);
-      }
+      vendaProdutoList.add(vendaProduto);
     }
 
     Set<VendaProduto> vendaProdutoSet = new HashSet<>(vendaProdutoList);
 
     venda.setProdutos(vendaProdutoSet);
     venda.setTotal(total);
+    venda.setDataCriacao(LocalDateTime.now());
 
     return venda;
   }
 
-  public Venda vendaUpdateRequestToVenda(VendaUpdateRequest vendaRequest, List<ProdutoResponse> produtosResponseList, FeiraResponse feiraResponse) {
-    Venda venda = new Venda();
+  public Venda vendaUpdateRequestToVenda(Venda venda, VendaUpdateRequest vendaRequest, List<ProdutoResponse> produtosResponseList, FeiraResponse feiraResponse) {
     venda.setTipoVenda(vendaRequest.getTipoVenda());
 
     Feira feira = new Feira();
@@ -237,8 +242,11 @@ public class VendaConverter {
     List<VendaProduto> vendaProdutoList = new ArrayList<>();
 
     BigDecimal total = BigDecimal.ZERO;
+    BigDecimal valorTotalProduto;
 
     for (ProdutoResponse produtoResponse : produtosResponseList) {
+      valorTotalProduto = BigDecimal.ZERO;
+
       VendaProduto vendaProduto = new VendaProduto();
 
       Produto produto = new Produto();
@@ -250,24 +258,37 @@ public class VendaConverter {
 
       produto.setId(produtoResponse.getId());
       produto.setImagemBase64(produtoResponse.getImagemBase64());
-      produto.setFeira(null);
+      produto.setFeira(feira);
       produto.setNome(produtoResponse.getNome());
       produto.setDescricao(produtoResponse.getDescricao());
       produto.setCategoria(categoria);
+      produto.setPreco(produtoResponse.getPreco());
 
-      vendaProduto.setVenda(null);
+      vendaProduto.setId(venda.getProdutos().stream().filter(p -> {
+        assert p.getProduto().getId() != null;
+        return p.getProduto().getId().equals(produtoResponse.getId());
+      }).findFirst().orElseGet(VendaProduto::new).getId());
+
+      vendaProduto.setSequencia(venda.getProdutos().stream().filter(p -> {
+        assert p.getProduto().getId() != null;
+        return p.getProduto().getId().equals(produtoResponse.getId());
+      }).findFirst().orElseGet(VendaProduto::new).getSequencia());
+
       vendaProduto.setProduto(produto);
       vendaProduto.setQuantidade(vendaRequest.getProdutos().stream().filter(p -> p.getProdutoId().equals(produtoResponse.getId())).findFirst().orElseGet(VendaUpdateProdutoRequest::new).getQuantidadeNova());
 
-      vendaProdutoList.add(vendaProduto);
+      valorTotalProduto = valorTotalProduto.add(produtoResponse.getPreco().multiply(BigDecimal.valueOf(vendaProduto.getQuantidade())));
+      total = total.add(valorTotalProduto);
 
-      total = total.add(produtoResponse.getPreco());
+      vendaProduto.setVenda(venda);
+      vendaProdutoList.add(vendaProduto);
     }
 
     Set<VendaProduto> vendaProdutoSet = new HashSet<>(vendaProdutoList);
 
     venda.setProdutos(vendaProdutoSet);
     venda.setTotal(total);
+    venda.setDataAtualizacao(LocalDateTime.now());
 
     return venda;
   }

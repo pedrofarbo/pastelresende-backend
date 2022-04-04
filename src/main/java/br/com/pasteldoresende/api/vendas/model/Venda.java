@@ -7,13 +7,17 @@ import lombok.*;
 import javax.persistence.*;
 import java.io.Serializable;
 import java.math.BigDecimal;
+import java.time.LocalDateTime;
 import java.util.HashSet;
 import java.util.Set;
 
 @Entity
 @Table(name = "vendas")
 @Data
-@EqualsAndHashCode(callSuper = false, exclude = {"produtos"})
+@AllArgsConstructor
+@NoArgsConstructor
+@EqualsAndHashCode
+@ToString(of = {"id"})
 public class Venda implements Serializable  {
 
   private static final long serialVersionUID = -2952735933715107252L;
@@ -28,7 +32,7 @@ public class Venda implements Serializable  {
   private Feira feira;
 
   @JsonIgnoreProperties(value = {"venda"}, allowSetters = true)
-  @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL, mappedBy = "venda", orphanRemoval = true)
+  @OneToMany(mappedBy = "venda", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
   private Set<VendaProduto> produtos = new HashSet<>();
 
   @Column
@@ -36,4 +40,10 @@ public class Venda implements Serializable  {
 
   @Column
   private BigDecimal total;
+
+  @Column
+  private LocalDateTime dataCriacao;
+
+  @Column
+  private LocalDateTime dataAtualizacao;
 }

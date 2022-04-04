@@ -11,4 +11,7 @@ import java.util.Optional;
 public interface VendaRepository extends CrudRepository<Venda, Long> {
   @Query("SELECT DISTINCT e FROM Venda e JOIN FETCH e.feira f JOIN FETCH e.produtos ps LEFT JOIN FETCH ps.produto p WHERE f.id = :id ORDER BY p.nome")
   Iterable<Venda> findAllByFeiraId(Long id);
+
+  @Query("SELECT DISTINCT e FROM Venda e JOIN FETCH e.feira f LEFT JOIN FETCH e.produtos ps LEFT JOIN FETCH ps.produto p ORDER BY p.nome")
+  Iterable<Venda> findAllWithAllProdutos();
 }

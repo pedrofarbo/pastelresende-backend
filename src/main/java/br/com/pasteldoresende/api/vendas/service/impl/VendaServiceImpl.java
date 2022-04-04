@@ -15,6 +15,7 @@ import br.com.pasteldoresende.api.vendas.controller.response.VendaResponse;
 import br.com.pasteldoresende.api.vendas.converter.VendaConverter;
 import br.com.pasteldoresende.api.vendas.model.Venda;
 import br.com.pasteldoresende.api.vendas.model.VendaProduto;
+import br.com.pasteldoresende.api.vendas.repository.VendaProdutoRepository;
 import br.com.pasteldoresende.api.vendas.repository.VendaRepository;
 import br.com.pasteldoresende.api.vendas.service.VendaService;
 import lombok.AllArgsConstructor;
@@ -31,6 +32,7 @@ import java.util.Optional;
 public class VendaServiceImpl implements VendaService {
 
   private final VendaRepository vendaRepository;
+  private final VendaProdutoRepository vendaProdutoRepository;
   private final FeiraService feiraService;
   private final ProdutoService produtoService;
   private final EstoqueService estoqueService;
@@ -41,7 +43,7 @@ public class VendaServiceImpl implements VendaService {
     List<Venda> vendaList = new ArrayList<>();
 
     try {
-      Iterable<Venda> vendaIterable = vendaRepository.findAll();
+      Iterable<Venda> vendaIterable = vendaRepository.findAllWithAllProdutos();
       vendaIterable.iterator().forEachRemaining(vendaList::add);
 
       if (!vendaList.isEmpty()) {
@@ -85,6 +87,8 @@ public class VendaServiceImpl implements VendaService {
 
   @Override
   public VendaResponse create(VendaRequest vendaRequest) {
+
+
     List<ProdutoResponse> produtos = new ArrayList<>();
 
     try {
@@ -105,7 +109,9 @@ public class VendaServiceImpl implements VendaService {
         Venda venda = converter.vendaRequestToVenda(vendaRequest, produtos, feira);
         Venda vendaResponse = vendaRepository.save(venda);
 
-        if (vendaResponse.getId() != null) {
+        Iterable<VendaProduto> vendaProdutos = vendaProdutoRepository.saveAll(vendaResponse.getProdutos());
+
+        if (vendaResponse.getId() != null && vendaProdutos.iterator().hasNext()) {
           EstoqueRequest estoqueRequest = new EstoqueRequest();
 
           for (VendaProduto produto : vendaResponse.getProdutos()) {
@@ -131,7 +137,7 @@ public class VendaServiceImpl implements VendaService {
     try {
       Optional<Venda> vendaOptional = vendaRepository.findById(id);
 
-      if(vendaOptional.isPresent()) {
+      if (vendaOptional.isPresent()) {
         try {
           for (VendaUpdateProdutoRequest vendaProduto : vendaRequest.getProdutos()) {
             ProdutoResponse produtoResponse = produtoService.getById(vendaProduto.getProdutoId());
@@ -147,18 +153,23 @@ public class VendaServiceImpl implements VendaService {
           FeiraResponse feira = feiraService.getById(vendaRequest.getFeiraId());
 
           if (feira.getId() != null) {
-            Venda venda = converter.vendaUpdateRequestToVenda(vendaRequest, produtos, feira);
-            venda.setId(vendaOptional.get().getId());
+            Venda venda = converter.vendaUpdateRequestToVenda(vendaOptional.get(), vendaRequest, produtos, feira);
             Venda vendaResponse = vendaRepository.save(venda);
 
             if (vendaResponse.getId() != null) {
               EstoqueRequest estoqueRequest = new EstoqueRequest();
 
               for (VendaUpdateProdutoRequest vendaProduto : vendaRequest.getProdutos()) {
-                EstoqueResponse estoqueResponse = estoqueService.getByProductId(vendaProduto.getProdutoId());
+                estoqueService.getByProductId(vendaProduto.getProdutoId());
                 int diferenca = Math.abs(vendaProduto.getQuantidadeNova() - vendaProduto.getQuantidadeAntiga());
-                estoqueRequest.setValor(diferenca);
-                estoqueService.update(estoqueResponse.getId(), estoqueRequest);
+
+                if(vendaProduto.getQuantidadeNova() > vendaProduto.getQuantidadeAntiga()) {
+                  estoqueRequest.setValor(diferenca);
+                } else {
+                  estoqueRequest.setValor(diferenca*-1);
+                }
+
+                estoqueService.update(vendaProduto.getProdutoId(), estoqueRequest);
               }
             }
 

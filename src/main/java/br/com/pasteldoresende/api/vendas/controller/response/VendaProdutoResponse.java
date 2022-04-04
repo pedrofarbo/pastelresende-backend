@@ -12,6 +12,7 @@ import java.io.Serializable;
 @EqualsAndHashCode
 public class VendaProdutoResponse implements Serializable {
   private Long id;
+  private Integer sequencia;
   private ProdutoResponse produto;
   private Integer quantidade;
 }
